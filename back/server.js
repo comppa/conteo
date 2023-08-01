@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // aca se colocan las rutas
 app.get("/", (req, res) => {
-  res.json({ message: "Bienvenido a mi apliaccion para conteo de votos a traves de los formularios." });
+  res.json({ message: "Bienvenido a mi apliacion para conteo de votos a traves de los formularios." });
 });
 
 // puerto
