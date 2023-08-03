@@ -20,4 +20,10 @@ module.exports = function(app) {
   );
 
   app.post("/api/auth/signin", controller.signin);
+
+  app.get('/auth/google/callback',  passport.authenticate('google', { failureRedirect: '/error' }),
+    function(req, res) {
+        // Successful authentication, redirect success.
+        res.redirect('/success');
+    });
 };
