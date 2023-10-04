@@ -86,9 +86,41 @@ isCandidato = (req, res, next) => {
   });
 };
 
+isTestigo= (req, res, next) => {
+  User.findById(req.userId).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    Role.find(
+      {
+        _id: { $in: user.roles }
+      },
+      (err, roles) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+
+        for (let i = 0; i < roles.length; i++) {
+          if (roles[i].name === "testigo") {
+            next();
+            return;
+          }
+        }
+
+        res.status(403).send({ message: "Se requiere rol de testigo!" });
+        return;
+      }
+    );
+  });
+};
+
 const authJwt = {
   verifyToken,
   isAdmin,
-  isCandidato
+  isCandidato,
+  isTestigo
 };
 module.exports = authJwt;

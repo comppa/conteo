@@ -13,17 +13,16 @@ module.exports = function(app) {
   app.post(
     "/api/auth/signup",
     [
-      verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted
+      verifySignUp.checkDuplicateUsername,
+      verifySignUp.checkRoleExisted
     ],
     controller.signup
   );
+  
 
   app.post("/api/auth/signin", controller.signin);
+  app.get("/api/users", controller.getusers);
+  app.get("/api/user", controller.getuser);
+  app.post("/api/auth/update",[ verifySignUp.checkRoleExisted], controller.update);
 
-  app.get('/auth/google/callback',  passport.authenticate('google', { failureRedirect: '/error' }),
-    function(req, res) {
-        // Successful authentication, redirect success.
-        res.redirect('/success');
-    });
 };
