@@ -14,15 +14,17 @@ module.exports = function(app) {
     "/api/auth/signup",
     [
       verifySignUp.checkDuplicateUsername,
-      verifySignUp.checkRoleExisted
+      verifySignUp.checkRoleExisted,
+      verifySignUp.checkIfTable
     ],
     controller.signup
   );
-  
 
   app.post("/api/auth/signin", controller.signin);
   app.get("/api/users", controller.getusers);
-  app.get("/api/user", controller.getuser);
+  app.get("/api/usersco", controller.getusercor);
+  app.get("/api/auth/user", controller.getuser);
+  app.post("/api/assing", controller.assingSend);
   app.post("/api/auth/update",[ verifySignUp.checkRoleExisted], controller.update);
 
 };

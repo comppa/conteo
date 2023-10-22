@@ -11,7 +11,10 @@ module.exports = function(app) {
     next();
   });
 
-  app.post("/api/vote", controller.addvote);
+  app.post("/api/vote", [authJwt.verifyToken], controller.addvote);
   app.get("/api/get-table-votes", controller.getvotesT);
+  app.put("/api/editvotes", controller.updatevotes);
+  app.get("/api/votes", controller.getvotes);
+  app.get("/api/get-votes", controller.getvotesCT);
   app.get("/api/get-candidate-votes", controller.getvotesC);
 };

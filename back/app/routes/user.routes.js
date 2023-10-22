@@ -1,5 +1,7 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/user.controller");
+const upload = require("../middlewares/upload");
+const excelController = require("../controllers/excel.controller");
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -27,4 +29,6 @@ module.exports = function(app) {
     // [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
+
+  app.post("/api/uploadusers", [upload.single("file")], excelController.uploadUsers);
 };

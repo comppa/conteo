@@ -5,6 +5,7 @@ const Role = db.role;
 const Table = db.table;
 const Candidate = db.candidate;
 const Local = db.local;
+const User = db.user;
 
 
 initial = (req, res, next) => {
@@ -106,6 +107,33 @@ initial = (req, res, next) => {
       }
       console.log("added candidate francisco");
     });
+    new Candidate({
+      number: 7,
+      name: "Voto en blanco"
+    }).save(err => {
+      if (err) {
+        console.log("error", err);
+      }
+      console.log("added candidate Voto en Blanco");
+    });
+    new Candidate({
+      number: 8,
+      name: "Voto Nulo"
+    }).save(err => {
+      if (err) {
+        console.log("error", err);
+      }
+      console.log("added candidate Voto Nulo");
+    });
+    new Candidate({
+      number: 9,
+      name: "Votos no marcados"
+    }).save(err => {
+      if (err) {
+        console.log("error", err);
+      }
+      console.log("added candidate Voto en Blanco");
+    });
     };
   });
 
@@ -123,7 +151,7 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -146,7 +174,7 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -166,7 +194,7 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -187,7 +215,8 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
+
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -206,7 +235,8 @@ initial = (req, res, next) => {
             new Table({
               number: 1,
               local: pto._id,
-              votes: []
+              scrutinized: false
+
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -227,7 +257,8 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
+
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -247,7 +278,8 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
+
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -267,7 +299,8 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
+
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -287,7 +320,8 @@ initial = (req, res, next) => {
             new Table({
               number: i,
               local: pto._id,
-              votes: []
+              scrutinized: false
+
             }).save(err => {
               if (err) {
                 console.log("error", err);
@@ -307,7 +341,8 @@ initial = (req, res, next) => {
                 new Table({
                   number: i,
                   local: pto._id,
-                  votes: []
+                  scrutinized: false
+
                 }).save(err => {
                   if (err) {
                     console.log("error", err);

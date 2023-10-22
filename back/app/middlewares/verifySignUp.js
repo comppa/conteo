@@ -1,6 +1,8 @@
 const db = require("../models");
 const Role = db.role;
 const User = db.user;
+const Local = db.local;
+const Table = db.table;
 
 checkDuplicateUsername = (req, res, next) => {
   // Username
@@ -47,11 +49,11 @@ checkUser = (req, res, next) => {
       }
       
       Table.findOne({
-            number: req.body.number,
+            number: req.body.table,
             local: pto._id
       },(err, table) => {
           if (!table) {
-              return res.status(400).json({ success: false, error: "Proporcione una numero de mesa" })
+              return res.status(400).json({ success: false, error: "Proporcione un numero de mesa" })
           }
           
           User.findOne({
@@ -79,10 +81,47 @@ checkUser = (req, res, next) => {
   });
 }
 
+checkIfTable = (req, res, next) => {
+  Local.findOne({name: req.body.local },
+    (err, pto) => {
+      if (!pto) {
+        res.status(500).send({ message: "Ingrese un puesto de votación valido" });
+        return;
+      }
+      
+      Table.findOne({
+            number: req.body.table,
+            local: pto._id
+      },(err, table) => {
+          if (!table) {
+              return res.status(400).json({ success: false, error: "Proporcione un numero de mesa" })
+          }
+          // console.log(table._id);
+          User.findOne({
+            table: table._id
+          }).exec((err, user) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            if (user) {
+              res.status(400).send({ message: "La mesa ya tiene un usuario asignado, ingrese otra mesa" });
+              return;
+            }
+            
+            next();
+          });
+
+      });
+  });
+}
+
 const verifySignUp = {
   checkDuplicateUsername,
   checkRoleExisted,
-  checkUser
+  checkUser,
+  checkIfTable
 };
 
 module.exports = verifySignUp;

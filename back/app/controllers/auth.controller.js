@@ -7,6 +7,7 @@ const Table = db.table;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { log } = require("async");
 
 exports.signup = (req, res) => {
   const user = new User({
@@ -14,7 +15,8 @@ exports.signup = (req, res) => {
     name: req.body.name,
     phone: req.body.phone,
     username: req.body.username,
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
+    send: false
   });
 
   user.save((err, user) => {
@@ -43,17 +45,9 @@ exports.signup = (req, res) => {
                     res.status(500).send({ message: err });
                     return;
                   }
-                  table.owner = user._id
-                  table.save(err => {
-                    if (err) {
-                      res.status(500).send({ message: err });
-                      return;
-                    }
-        
-                    res.send({ message: "El usuario fue registrado exitosamente!" });
-                  });
-
-                  user.table = table._id
+                  
+                  user.table = table._id; 
+                  user.local = local._id;
                   user.save(err => {
                     if (err) {
                       res.status(500).send({ message: err });
@@ -102,7 +96,9 @@ exports.signin = (req, res) => {
   User.findOne({
     username: req.body.username
   })
-    .populate("role", "-__v")
+    .populate('role')
+    .populate('local')
+    .populate('table')
     .exec((err, user) => {
       if (err) {
         res.status(500).send({ message: err });
@@ -117,16 +113,16 @@ exports.signin = (req, res) => {
         req.body.password,
         user.password
       );
-        
+
 
       if (!passwordIsValid) {
         return res.status(401).send({
           accessToken: null,
-          message: "Invalid Password!"
+          message: "Revisa la contraseña!"
         });
       }
 
-      const token = jwt.sign({ id: user.id },
+      const token = jwt.sign({ id: user._id },
                               config.secret,
                               {
                                 algorithm: 'HS256',
@@ -135,32 +131,111 @@ exports.signin = (req, res) => {
                               });
 
       var authorities = "ROLE_" + user.role.name.toUpperCase();
-      res.status(200).send({id: user._id, username: user.username, role: authorities, accessToken: token });
+
+      if(user.role.name === "testigo"){
+        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.table.scrutinized});
+
+      }else{
+        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
+      }
+      // console.log(user.table.number);
     });
 };
 
-exports.getusers = (req, res ) =>{
-  User.find({},(err, users) => {
-    if (err) {
-        return res.status(400).json({ success: false, error: err })
-    }
+exports.getusers = async (req, res ) =>{
+  let users;
+  let results = [];
+  try {
+    users = await User.find({}).populate('role').populate('local').populate('table');
     if (!users.length) {   
-        return res
-            .status(404)
-            .json({ success: false, error: 'users not found' })
+        return res.status(404).json({ success: false, error: 'no se encontraro usuarios' })
+      }
+    for (let i = 0; i < users.length; i++) {
+      results.push({ nit: users[i].nit ? users[i].nit : "", name: users[i].name, phone: users[i].phone ? users[i].phone : "", username: users[i].username, role: users[i].role.name,  local: users[i].local ? users[i].local.name : "",  table: users[i].table ? users[i].table.number : ""});
     }
-  return res.status(200).json({ success: true, data: users})
-  }).populate('role').clone().catch(err => console.log(err))
+    return res.status(200).json({ success: true, data: results});
+  } catch (error) {
+    return res.status(400).json({ success: false, error: error })
+  }
+  // User.find({}).populate('role').populate('local').populate('table').exec((err, users) => {
+  //   if (err) {
+  //   }
+  //   
+  
+  // }).populate('role').clone().catch(err => console.log(err))
+};
+
+exports.getusercor = async (req, res) => {
+  let users, local;
+  let results;
+
+  try {
+    local = await Local.find({name: req.query.local});
+    if (!local) {
+      return res.status(404).json({ success: false, error: 'tiene que ingresar un puesto valido' })
+    }
+    users = await User.find({local: local._id}).populate('role').populate('local').populate('table');
+    if (!users.length) {   
+      return res.status(404).json({ success: false, error: 'no se encontraro usuarios' })
+    }
+    for (let i = 0; i < users.length; i++) {
+      results.push({ nit: users[i].nit ? users[i].nit : "", name: users[i].name, phone: users[i].phone ? users[i].phone : "", username: users[i].username, role: users[i].role.name,  local: users[i].local ? users[i].local.name : "",  table: users[i].table ? users[i].table.number : ""});
+    }
+  } catch (error) {
+    return res.status(400).json({ success: false, error: error })
+  }
 };
 
 
 exports.getuser = (req, res ) =>{
+  User.findOne({username: req.query.username})
+  .populate('role')
+  .populate('local')
+  .populate('table')
+  .exec((err, user) => {
+    if (!user) {
+        return res.status(400).json({ success: false, error: "El usuario " + req.body.username +" no existe, ingresa un usuario valido" });
+    }
+
+    const token = jwt.sign({ id: user._id },
+          config.secret,
+          {
+            algorithm: 'HS256',
+            allowInsecureKeySizes: true,
+            expiresIn: 86400, // 24 hours
+          });
+
+    var authorities = "ROLE_" + user.role.name.toUpperCase();
+
+    if(user.role.name === "testigo"){
+      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send});
+
+    }else{
+      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
+    }
+
+  });
+};
+
+exports.assingSend = (req, res ) =>{
   User.findOne({username: req.body.username},(err, user) => {
     if (!user) {
         return res.status(400).json({ success: false, error: "El usuario " + req.body.username +" no existe, ingresa un usuario valido" });
     }
-  return res.status(200).json({ success: true, data: user})
-  }).clone().catch(err => console.log(err))
+    console.log(user.username);
+    user.send = true;
+
+    user.save(err => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      console.log(user.send);
+      res.send({ message: "El usuario fue actualizado exitosamente!" });
+
+    });
+  });
 };
 
 

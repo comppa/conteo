@@ -13,10 +13,13 @@ const Table = db.table;
 const Candidate = db.candidate;
 const Local = db.local;
 
+
 var corsOptions = {
   origin: "http://localhost:3000"
 };
 
+
+global.__basedir = __dirname ;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -28,6 +28,21 @@ getTables = (req, res) => {
     });
 };
 
+getLocals = (req, res) => {
+  Local.find().select({ "name": 1, "_id": 0}).exec((err, locals) => {
+    if (err) {
+        return res.status(400).json({ success: false, error: err })
+    }
+    if (!locals.length) {   
+        return res
+            .status(404)
+            .json({ success: false, error: 'users not found' })
+    }
+  return res.status(200).json({ success: true, data: locals})
+  });
+};
+
+
 gettable = (req, res) => {
     Local.findOne({name: req.body.local },
         (err, pto) => {
@@ -47,6 +62,81 @@ gettable = (req, res) => {
           }).clone().catch(err => console.log(err));
     });
 };
+
+getScrutinizedtables = (req, res) => {
+  Table.find({scrutinized: true }).populate('local').exec((err, tables) => {
+        if (!tables) {
+          res.status(500).send({ message: "No se han escrutado ninguna mesa escrutada" });
+          return;
+        }
+        return res.status(200).json({ success: true, data: tables})
+        });
+};
+
+getNoScrutinizedtables = (req, res) => {
+  Table.find({scrutinized: false }).populate('local').exec((err, tables) => {
+        if (!tables) {
+          res.status(500).send({ message: "No se han escrutado ninguna mesa no escrutada" });
+          return;
+        }
+        return res.status(200).json({ success: true, data: tables})
+        });
+};
+
+getPieScrutinized = async (req, res)=>{
+  let scrtables, noscrtables, result;
+  try {
+    scrtables = await Table.find({scrutinized: true});
+    noscrtables = await Table.find({scrutinized: false});
+    result = [scrtables.length, noscrtables.length];
+    return res.status(200).json({ success: true, data: result})
+  } catch (error) {
+      return res.status(500).send({ message: "No se han escrutado ninguna mesa" });
+  }
+}
+
+
+addEscruter = (req, res) => {
+  Local.findOne({name: req.body.local },
+      (err, pto) => {
+        if (!pto) {
+          res.status(500).send({ message: "Ingrese un puesto de votación valido" });
+          return;
+        }
+        
+        Table.findOne({
+              number: req.body.number,
+              local: pto._id,
+              
+        },(err, table) => {
+            if (!table) {
+                return res.status(400).json({ success: false, error: "Proporcione una numero de mesa" })
+            }
+
+            table.scrutinized = true;
+            if (req.body.observations) {
+              table.observations.push(req.body.observations);
+            }
+            if (req.body.ischecked) {
+              console.log("algo para ver");
+              table.rconts = true;
+            }
+
+            table.tvotos = req.body.total;
+
+            table.save(err => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+  
+              return res.send({ message: "La tabla se escruto y guardo la totalidad de los votos!" });
+            });
+
+        });
+  });
+};
+
 
 updatetable = (req, res) => {
     Local.findOne({name: req.body.local },
@@ -124,5 +214,10 @@ module.exports = {
     getTables,
     gettable,
     updatetable,
-    getTableByUserId
+    getTableByUserId,
+    getLocals,
+    addEscruter,
+    getScrutinizedtables,
+    getPieScrutinized,
+    getNoScrutinizedtables
 };

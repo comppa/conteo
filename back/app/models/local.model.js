@@ -6,7 +6,7 @@ const Local = mongoose.model(
   new mongoose.Schema({
     number: Number,
     name: String
-  })
+  }, { timestamps: true })
 );
 
 module.exports = Local;

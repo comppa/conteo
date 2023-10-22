@@ -12,6 +12,11 @@ module.exports = function(app) {
 
   app.get("/api/tables", controller.getTables);
   app.get("/api/table", controller.gettable); 
+  app.get("/api/getscrutinizedtables", controller.getScrutinizedtables); 
+  app.get("/api/getnoscrutinizedtables", controller.getNoScrutinizedtables); 
+  app.get("/api/getPie", controller.getPieScrutinized); 
+  app.post("/api/addescruter", controller.addEscruter); 
   app.post("/api/update/table", controller.updatetable);
+  app.get("/api/locals", controller.getLocals);
   app.get("/api/getbyuser", controller.getTableByUserId);
 };

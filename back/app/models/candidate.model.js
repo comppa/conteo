@@ -4,8 +4,10 @@ const Candidate = mongoose.model(
   "Candidate",
   new mongoose.Schema({
     number: Number,
-    name: String
-  })
+    name: String,
+    coorporation: String,
+    total: Number
+  }, { timestamps: true })
 );
 
 module.exports = Candidate;

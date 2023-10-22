@@ -5,15 +5,19 @@ const Table = mongoose.model(
   "Table",
   new mongoose.Schema({
     number: Number,
+    observations: [String],
+    scrutinized: Boolean,
+    tvotes: Number,
+    rconts: Boolean,
     local: {
       type: Schema.Types.ObjectId,
       ref: "Local"
     },
-    owner: {
+    votes:[{
       type: Schema.Types.ObjectId,
-      ref: "User"
-    }
-  })
+      ref: "Vote"
+    }]
+  }, { timestamps: true })
 );
 
 module.exports = Table;
