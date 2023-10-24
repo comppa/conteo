@@ -105,7 +105,7 @@ addEscruter = (req, res) => {
         }
         
         Table.findOne({
-              number: req.body.number,
+              number: req.body.table,
               local: pto._id,
               
         },(err, table) => {

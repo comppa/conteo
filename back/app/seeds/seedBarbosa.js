@@ -13,7 +13,7 @@ initial = (req, res, next) => {
   Role.estimatedDocumentCount((error, count) => {
     // console.log(count);
     if (!error && count === 0) {
-    const rolea = ["admin", "candidato", "testigo", "escrutador", "coordinador"];
+    const rolea = ["admin", "candidato", "testigo", "coordinador"];
     for (let i = 0; i < rolea.length; i++) {
       new Role({
         name: rolea[i]

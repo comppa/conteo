@@ -197,7 +197,6 @@ exports.getuser = (req, res ) =>{
     if (!user) {
         return res.status(400).json({ success: false, error: "El usuario " + req.body.username +" no existe, ingresa un usuario valido" });
     }
-
     const token = jwt.sign({ id: user._id },
           config.secret,
           {
@@ -210,15 +209,11 @@ exports.getuser = (req, res ) =>{
 
     if(user.role.name === "testigo"){
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send});
-
-    }
-    if (user.role.name === "coordinador") {
+    }else if(user.role.name === "coordinador") {
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name});
     }else{
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
     }
-
-
   });
 };
 

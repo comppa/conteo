@@ -81,7 +81,7 @@ addvote = async (req, res, next) => {
                         }); 
                   }
                   let votesId = [];
-                  votesId = Vote.find({table: table._id}).select({ "_id": 1, "candidate": 0, "table": 0, "cant": 0,  "createdAt": 0, "updatedAt": 0 });
+                  votesId = await Vote.find({table: table._id}).select({ "_id": 1, "candidate": 0, "table": 0, "cant": 0,  "createdAt": 0, "updatedAt": 0 });
                   res.send({ success: true,  message: "Los votos ha sido guardado con exito!", data: votesId });
             });
           }); 
