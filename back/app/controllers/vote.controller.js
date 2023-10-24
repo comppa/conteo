@@ -48,7 +48,7 @@ addvote = async (req, res, next) => {
               Table.findOne({
                     number: body.table,
                     local: pto._id
-              },(err, table) => {
+              }, async (err, table) => {
                   if (!table) {
                       return res.status(400).json({ success: false, error: "ingrese un numero de mesa de votacion" })
                   }
@@ -80,8 +80,9 @@ addvote = async (req, res, next) => {
 
                         }); 
                   }
-                  Vote.find({table: table._id}).select({ "_id": 1, "candidate": 0, "table": 0, "cant": 0,  "createdAt": 0, "updatedAt": 0 }).exec()
-                  res.send({ success: true,  message: "Los votos ha sido guardado con exito!" });
+                  let votesId = [];
+                  votesId = Vote.find({table: table._id}).select({ "_id": 1, "candidate": 0, "table": 0, "cant": 0,  "createdAt": 0, "updatedAt": 0 });
+                  res.send({ success: true,  message: "Los votos ha sido guardado con exito!", data: votesId });
             });
           }); 
         }

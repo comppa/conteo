@@ -166,26 +166,27 @@ exports.getusers = async (req, res ) =>{
 };
 
 exports.getusercor = async (req, res) => {
-  let users, local;
-  let results;
+  let users, local, role;
 
+  let results = [];
   try {
-    local = await Local.find({name: req.query.local});
+    local = await Local.findOne({name: req.query.local});
     if (!local) {
       return res.status(404).json({ success: false, error: 'tiene que ingresar un puesto valido' })
     }
-    users = await User.find({local: local._id}).populate('role').populate('local').populate('table');
+    role = await Role.findOne({name: "testigo"});
+    users = await User.find({role: role._id, local: local._id}).populate('role').populate('local').populate('table');
     if (!users.length) {   
       return res.status(404).json({ success: false, error: 'no se encontraro usuarios' })
     }
     for (let i = 0; i < users.length; i++) {
       results.push({ nit: users[i].nit ? users[i].nit : "", name: users[i].name, phone: users[i].phone ? users[i].phone : "", username: users[i].username, role: users[i].role.name,  local: users[i].local ? users[i].local.name : "",  table: users[i].table ? users[i].table.number : ""});
     }
+    return res.status(200).json({ success: true, data: results});
   } catch (error) {
     return res.status(400).json({ success: false, error: error })
   }
 };
-
 
 exports.getuser = (req, res ) =>{
   User.findOne({username: req.query.username})
@@ -210,9 +211,13 @@ exports.getuser = (req, res ) =>{
     if(user.role.name === "testigo"){
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send});
 
+    }
+    if (user.role.name === "coordinador") {
+      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name});
     }else{
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
     }
+
 
   });
 };
