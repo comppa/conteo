@@ -12,7 +12,7 @@ initial = (req, res, next) => {
      
   Role.estimatedDocumentCount((error, count) => {
     // console.log(count);
-    // if (!error && count === 0) {
+    if (!error && count === 0) {
     const rolea = ["admin", "candidato", "testigo", "coordinador"];
     for (let i = 0; i < rolea.length; i++) {
       new Role({
@@ -25,11 +25,11 @@ initial = (req, res, next) => {
         console.log("added "+ rolea[i] +" to roles collection");
       });
      };
-    // };
+    };
   });
 
   Local.estimatedDocumentCount((error, count) => {
-    // if (!error && count === 0) {
+    if (!error && count === 0) {
     var locala = [["I.E. ANTONIO ROLDAN BETANCUR", 1],
       ["PARQUE EDUCATIVO JESUS ARCANGEL RAMIREZ", 2],
       ["COLEGIO SEDE ANGEL AMABLE ARROYAVE", 1],
@@ -51,11 +51,11 @@ initial = (req, res, next) => {
           console.log("added local " + locala[i]);
         });
       };
-    // }
+    }
   });
   
   Candidate.estimatedDocumentCount((error, count) => {
-    // if (!error && count === 0) {
+    if (!error && count === 0) {
       new Candidate({
         number: 1,
         name: "RUBEN VALDO CANO AGUDELO"
@@ -134,7 +134,7 @@ initial = (req, res, next) => {
       }
       console.log("added candidate VOTOS NO MARCADOS");
     });
-    // };
+    };
   });
 
   setTimeout(function() {

@@ -3,9 +3,11 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 const app = express();
 const db = require("./app/models");
-
-
+const fs = require('fs');
+const https = require('https');
 const dbConfig = require("./app/config/db.config");
+const cookieParser = require("cookie-parser");
+const sessions = require('express-session');
 // const seed = require("./app/seeds/seed");
 
 const Role = db.role;
@@ -15,7 +17,7 @@ const Local = db.local;
 
 
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: "https://bello.jpweb.com.co"
 };
 
 
@@ -26,8 +28,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 
-db.mongoose.set('strictQuery', false);
+// const httpsServer = https.createServer({
+//   key: fs.readFileSync('./cert/privkey.pem'),
+//   cert: fs.readFileSync('/home/ubuntu/server/cert/fullchain.pem'),
+// },app);
 
+db.mongoose.set('strictQuery', false);
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
     useNewUrlParser: true,
@@ -48,6 +54,15 @@ db.mongoose
 
   // parse requests of content-type - application/x-www-form-urlencoded
   app.use(express.urlencoded({ extended: false }));
+  // app.use(cookieParser());
+
+  // const oneDay = 1000 * 60 * 60 * 24;
+  //   app.use(sessions({
+  //       secret: "secret-bello",
+  //       saveUninitialized:true,
+  //       cookie: { maxAge: oneDay },
+  //       resave: false 
+  //   }));
   //Aca se colocan las rutas
   app.get("/", (req, res) => {
     res.json({ message: "Bienvenido a mi apliacion para conteo de votos a traves de los formularios." });
@@ -55,12 +70,8 @@ db.mongoose
 
 
   function initial() {
-    
 
   }
-
-  
-
 
 // routes
 require('./app/routes/auth.routes')(app);
@@ -73,6 +84,11 @@ require('./app/routes/table.routes')(app);
 
 // puerto
 const PORT = process.env.PORT || 8080;
+// httpsServer.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}.`);
+// });
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

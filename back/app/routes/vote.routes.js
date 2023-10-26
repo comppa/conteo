@@ -1,4 +1,4 @@
-const { verifyEnt, authJwt } = require("../middlewares");
+const { verifySignUp, authJwt } = require("../middlewares");
 const controller = require("../controllers/vote.controller");
 
 
@@ -11,7 +11,7 @@ module.exports = function(app) {
     next();
   });
 
-  app.post("/api/vote", [authJwt.verifyToken], controller.addvote);
+  app.post("/api/vote", [authJwt.verifyToken, verifySignUp.checkIfSend], controller.addvote);
   app.get("/api/get-table-votes", controller.getvotesT);
   app.put("/api/editvotes", controller.updatevotes);
   app.get("/api/votes", controller.getvotes);

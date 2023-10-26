@@ -20,8 +20,9 @@ module.exports = function(app) {
     controller.signup
   );
 
-  app.post("/api/auth/signin", controller.signin);
+  app.post("/api/auth/signin", [verifySignUp.checkIfSign], controller.signin);
   app.get("/api/users", controller.getusers);
+  app.get("/api/auth/logout", controller.logout);
   app.get("/api/usersco", controller.getusercor);
   app.get("/api/auth/user", controller.getuser);
   app.post("/api/assing", controller.assingSend);

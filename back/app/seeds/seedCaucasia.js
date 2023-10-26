@@ -12,7 +12,7 @@ initial = (req, res, next) => {
      
   Role.estimatedDocumentCount((error, count) => {
     // console.log(count);
-    if (!error && count === 0) {
+    // if (!error && count === 0) {
     const rolea = ["admin", "candidato", "testigo", "coordinador"];
     for (let i = 0; i < rolea.length; i++) {
       new Role({
@@ -25,11 +25,11 @@ initial = (req, res, next) => {
         console.log("added "+ rolea[i] +" to roles collection");
       });
      };
-    };
+    // };
   });
 
   Local.estimatedDocumentCount((error, count) => {
-    if (!error && count === 0) {
+    // if (!error && count === 0) {
     var locala = [["INSTITUCION EDUCATIVA SANTO DOMINGO", 1],
       ["IE SANTO DOMINGO NUEVA SANTA H", 2],
       ["I.E. LICEO CAUCASIA STA HELENA", 3],
@@ -69,11 +69,11 @@ initial = (req, res, next) => {
           console.log("added local " + locala[i]);
         });
       };
-    }
+    // }
   });
   
   Candidate.estimatedDocumentCount((error, count) => {
-    if (!error && count === 0) {
+    // if (!error && count === 0) {
       new Candidate({
         number: 1,
         name: "ANTONIO JOSE PEREZ ARAUJO"
@@ -204,12 +204,12 @@ initial = (req, res, next) => {
         }
         console.log("added candidate VOTOS NO MARCADOS");
       });
-    };
+    // };
   });
 
   setTimeout(function() {
     Table.estimatedDocumentCount((error, count) => {
-      if (!error && count === 0) {
+      // if (!error && count === 0) {
         Local.findOne({name: "INSTITUCION EDUCATIVA SANTO DOMINGO" },
         (err, pto) => {
           console.log(pto.name);
@@ -771,7 +771,7 @@ initial = (req, res, next) => {
                   console.log("added table " + 1 + " " + pto.name );
                 });
             }); 
-      };
+      // };
     }); 
   }, 10000);  
   

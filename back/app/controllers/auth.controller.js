@@ -9,87 +9,58 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { log } = require("async");
 
-exports.signup = (req, res) => {
-  const user = new User({
-    nit: req.body.nit,
-    name: req.body.name,
-    phone: req.body.phone,
-    username: req.body.username,
-    password: bcrypt.hashSync(req.body.password, 8),
-    send: false
-  });
-
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
-    if (req.body.role ) {
-      Role.findOne({name: req.body.role}, (err, role) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          user.role = role._id;
-          if (req.body.local) {
-             Local.findOne({name: req.body.local}, (err, local) =>{
-                if (!local) {
-                  res.status(500).send({ message: err });
-                  return;
-                }
-                Table.findOne({number: req.body.table, local: local._id}, (err, table) =>{
-
-                  if (!table) {
-                    res.status(500).send({ message: err });
-                    return;
-                  }
-                  
-                  user.table = table._id; 
-                  user.local = local._id;
-                  user.save(err => {
-                    if (err) {
-                      res.status(500).send({ message: err });
-                      return;
-                    }
-        
-                    res.send({ message: "El usuario fue registrado exitosamente!" });
-                  });
-                });
-             });
-          }else{
-            user.save(err => {
-              if (err) {
-                res.status(500).send({ message: err });
-                return;
-              }
+exports.signup = async (req, res) => {
+  let role, local, table;
+  try {
+    const user =  new User({
+      nit: req.body.nit,
+      name: req.body.name,
+      phone: req.body.phone,
+      username: req.body.username,
+      password: bcrypt.hashSync(req.body.password, 8),
+      send: false,
+      sign: false
+    });
   
-              res.send({ message: "El usuario fue registrado exitosamente!" });
-            });
-          }
-          
-        }
-      );
-    } else {
-      Role.findOne({ name: "testigo" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        user.role = role._id;
-        user.save(err => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          res.send({ message: "User was registered successfully!" });
-        });
-      });
+    if (req.body.role) {
+      role = await Role.findOne({name: req.body.role});
+      user.role = role._id;
+    }else{
+      role = await Role.findOne({name: "candidate"});
+      user.role = role._id;
     }
-  });
+  
+    if (req.body.local) {
+      local = await Local.findOne({name: req.body.local});
+      if (!local) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      user.local = local._id;
+    }
+  
+    if (req.body.table) {
+      table = await Table.findOne({number: req.body.table, local: local._id});
+      if (!table) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      user.table = table._id;
+    }
+    user.save(err => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+    });
+
+    res.send({ message: "El usuario fue registrado exitosamente!" });
+
+  } catch (error) {
+
+    return res.status(400).json({ success: false, error: error })
+  }
+  
 };
 
 exports.signin = (req, res) => {
@@ -131,16 +102,25 @@ exports.signin = (req, res) => {
                               });
 
       var authorities = "ROLE_" + user.role.name.toUpperCase();
-
+      user.sign = true;
+      user.save(err => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+      });
       if(user.role.name === "testigo"){
-        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.table.scrutinized});
-
+        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send});
+      }else if(user.role.name === "coordinador") {
+        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name});
       }else{
         res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
       }
       // console.log(user.table.number);
     });
 };
+
+
 
 exports.getusers = async (req, res ) =>{
   let users;
@@ -206,14 +186,35 @@ exports.getuser = (req, res ) =>{
           });
 
     var authorities = "ROLE_" + user.role.name.toUpperCase();
-
+    // console.log(user);
     if(user.role.name === "testigo"){
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send});
     }else if(user.role.name === "coordinador") {
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name});
     }else{
+      // console.log(user);
       res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
     }
+  });
+};
+
+exports.logout = (req, res ) =>{
+  User.findOne({username: req.query.username})
+  .exec((err, user) => {
+    if (!user) {
+        return res.status(400).json({ success: false, error: "El usuario " + req.body.username +" no existe, ingresa un usuario valido" });
+    }
+
+    user.sign = false;
+    // console.log(user);
+    user.save(err => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+      });
+
+      res.send({ success: true,  message: "El usuario se ha salido del sistema!" });
   });
 };
 

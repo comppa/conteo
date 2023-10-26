@@ -13,6 +13,7 @@ const User = mongoose.model(
     password: String,
     phone: String,
     send: Boolean,
+    sign: Boolean,
     local:{
       type: Schema.Types.ObjectId,
       ref: "Local"

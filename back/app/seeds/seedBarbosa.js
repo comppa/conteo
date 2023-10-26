@@ -28,18 +28,18 @@ initial = (req, res, next) => {
     };
   });
 
+
   Local.estimatedDocumentCount((error, count) => {
     if (!error && count === 0) {
-    var locala = [["I.E. ANTONIO ROLDAN BETANCUR", 1],
-      ["PARQUE EDUCATIVO JESUS ARCANGEL RAMIREZ", 2],
-      ["COLEGIO SEDE ANGEL AMABLE ARROYAVE", 1],
-      ["INSTITUCION EDUCATIVA RAFAEL NUÑEZ", 2],
-      ["CÁRCEL MUNICIPAL", 1],
-      ["BARRO BLANCO", 10], 
-      ["EL DOCE", 20],
-      ["LA CAUCANA", 30],
-      ["GUAIMARO SAN MIGUEL", 35],
-      ["PUERTO ANTIOQUIA", 60]];
+    var locala = [["PBRO. LUIS EDUARDO PEREZ MOLIN", 1],
+    ["INST. EDUC. MANUEL JOSE CAICED", 2],
+    ["IE LUIS EDUARDO ARIAS", 3],
+    ["CENTRO DE EDUCACION SUPERIOR", 1],
+    ["COL. COOPERATIVO SIMÓN BOLIVAR", 2],
+    ["C.A.S DIEGO FERNANDEZ BARBOSA", 3],
+    ["UNIDAD DEPORTIVA LOS BUCAROS", 4],
+    ["CARCEL", 1],
+    ["EL HATILLO", 1]];
       for (let i = 0; i < locala.length; i++) {
         new Local({
           number: locala[i][1],
@@ -58,58 +58,77 @@ initial = (req, res, next) => {
     if (!error && count === 0) {
       new Candidate({
         number: 1,
-        name: "Ruben Valdo Cano Agudelo"
+        name: "ALINA MARCELA RESTREPO RODRIGUEZ"
       }).save(err => {
         if (err) {
           console.log("error", err);
         }
 
-        console.log("Added candidate ruben");
+        console.log("Added candidate ALINA");
       });
 
       new Candidate({
         number: 2,
-        name: "Jesus Anibal Yepes Barrientos"
+        name: "FREDY ALBERTO CORREA CARDONA"
       }).save(err => {
         if (err) {
           console.log("error", err);
         }
 
-        console.log("addee candidate yepes");
+        console.log("addee candidate FREDY");
       });
 
       new Candidate({
         number: 3,
-        name: "Dawinson Gómez Tamayo"
+        name: "VICTOR ANTONIO GRACIANO RAMIREZ"
       }).save(err => {
         if (err) {
           console.log("error", err);
         }
 
-        console.log("added candidate dawinson");
+        console.log("added candidate VICTOR");
       });
       new Candidate({
-      number: 4,
-      name: "Yomer Fabian Alvarez Correa"
+        number: 4,
+        name: "LUIS JAVIER FRANCO AGUDELO"
+      }).save(err => {
+        if (err) {
+          console.log("error", err);
+        }
+
+        console.log("added candidate LUIS");
+      });
+      new Candidate({
+      number: 5,
+      name: "JUAN DAVID ROJAS AGUDELO"
     }).save(err => {
       if (err) {
         console.log("error", err);
       }
 
-      console.log("added candidate yomer");
+      console.log("added candidate JUAN");
     });
     new Candidate({
-      number: 5,
-      name: "Francisco Javier Vasquez Rengifo"
+      number: 6,
+      name: "JAIME LEON VANEGAS VELEZ"
     }).save(err => {
       if (err) {
         console.log("error", err);
       }
-      console.log("added candidate francisco");
+      console.log("added candidate JAIME");
     });
     new Candidate({
       number: 7,
-      name: "Voto en blanco"
+      name: "JUAN CAMILO TOBON OLARTE"
+    }).save(err => {
+      if (err) {
+        console.log("error", err);
+      }
+      console.log("added candidate JUAN");
+    });
+    new Candidate({
+      number: 8,
+      name: "VOTO EN BLANCO"
     }).save(err => {
       if (err) {
         console.log("error", err);
@@ -117,8 +136,8 @@ initial = (req, res, next) => {
       console.log("added candidate Voto en Blanco");
     });
     new Candidate({
-      number: 8,
-      name: "Voto Nulo"
+      number: 9,
+      name: "VOTO NULO"
     }).save(err => {
       if (err) {
         console.log("error", err);
@@ -126,8 +145,8 @@ initial = (req, res, next) => {
       console.log("added candidate Voto Nulo");
     });
     new Candidate({
-      number: 9,
-      name: "Votos no marcados"
+      number: 10,
+      name: "VOTOS NO MARCADOS"
     }).save(err => {
       if (err) {
         console.log("error", err);
@@ -140,14 +159,14 @@ initial = (req, res, next) => {
   setTimeout(function() {
     Table.estimatedDocumentCount((error, count) => {
       if (!error && count === 0) {
-        Local.findOne({name: "I.E. ANTONIO ROLDAN BETANCUR" },
+        Local.findOne({name: "PBRO. LUIS EDUARDO PEREZ MOLIN"},
         (err, pto) => {
           console.log(pto.name);
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
-          for (let i = 1; i < 15; i++) {
+          for (let i = 1; i < 21; i++) {
             new Table({
               number: i,
               local: pto._id,
@@ -162,7 +181,7 @@ initial = (req, res, next) => {
           };
         });
 
-        Local.findOne({name: "PARQUE EDUCATIVO JESUS ARCANGEL RAMIREZ" },
+        Local.findOne({name: "INST. EDUC. MANUEL JOSE CAICED" },
         (err, pto) => {
           console.log(pto.name);
 
@@ -170,7 +189,7 @@ initial = (req, res, next) => {
             res.status(500).send({ message: err });
             return;
           }
-          for (let i = 1; i < 15; i++) {
+          for (let i = 1; i < 27; i++) {
             new Table({
               number: i,
               local: pto._id,
@@ -184,13 +203,13 @@ initial = (req, res, next) => {
             });
           }
         });
-        Local.findOne({name: "COLEGIO SEDE ANGEL AMABLE ARROYAVE" },
+        Local.findOne({name: "IE LUIS EDUARDO ARIAS" },
         (err, pto) => {
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
-          for (let i = 1; i < 16; i++) {
+          for (let i = 1; i < 24; i++) {
             new Table({
               number: i,
               local: pto._id,
@@ -204,14 +223,14 @@ initial = (req, res, next) => {
             });
           }
         });
-        Local.findOne({name: "INSTITUCION EDUCATIVA RAFAEL NUÑEZ" },
+        Local.findOne({name: "CENTRO DE EDUCACION SUPERIOR"},
         (err, pto) => {
           console.log();
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
-          for (let i = 1; i < 16; i++) {
+          for (let i = 1; i < 12; i++) {
             new Table({
               number: i,
               local: pto._id,
@@ -226,7 +245,72 @@ initial = (req, res, next) => {
             });
           };
         });
-        Local.findOne({name: "CÁRCEL MUNICIPAL" },
+        
+
+        Local.findOne({name: "COL. COOPERATIVO SIMÓN BOLIVAR" },
+        (err, pto) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          for (let i = 1; i < 10; i++) {
+            new Table({
+              number: i,
+              local: pto._id,
+              scrutinized: false
+
+            }).save(err => {
+              if (err) {
+                console.log("error", err);
+              }
+      
+              console.log("added table " + i + " " + pto.name );
+            });
+          };
+        });
+        Local.findOne({name: "C.A.S DIEGO FERNANDEZ BARBOSA" },
+        (err, pto) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          for (let i = 1; i < 8; i++) {
+            new Table({
+              number: i,
+              local: pto._id,
+              scrutinized: false
+
+            }).save(err => {
+              if (err) {
+                console.log("error", err);
+              }
+      
+              console.log("added table " + i + " " + pto.name );
+            });
+          };
+        });
+        Local.findOne({name: "UNIDAD DEPORTIVA LOS BUCAROS" },
+        (err, pto) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          for (let i = 1; i < 28; i++) {
+            new Table({
+              number: i,
+              local: pto._id,
+              scrutinized: false
+
+            }).save(err => {
+              if (err) {
+                console.log("error", err);
+              }
+      
+              console.log("added table " + i + " " + pto.name );
+            });
+          };
+        });
+        Local.findOne({name: "CARCEL" },
         (err, pto) => {
           if (err) {
             res.status(500).send({ message: err });
@@ -246,77 +330,13 @@ initial = (req, res, next) => {
             });
           
         });
-
-        Local.findOne({name: "BARRO BLANCO" },
-        (err, pto) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          for (let i = 1; i < 5; i++) {
-            new Table({
-              number: i,
-              local: pto._id,
-              scrutinized: false
-
-            }).save(err => {
-              if (err) {
-                console.log("error", err);
-              }
-      
-              console.log("added table " + i + " " + pto.name );
-            });
-          };
-        });
-        Local.findOne({name: "EL DOCE" },
-        (err, pto) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          for (let i = 1; i < 7; i++) {
-            new Table({
-              number: i,
-              local: pto._id,
-              scrutinized: false
-
-            }).save(err => {
-              if (err) {
-                console.log("error", err);
-              }
-      
-              console.log("added table " + i + " " + pto.name );
-            });
-          };
-        });
-        Local.findOne({name: "LA CAUCANA" },
-        (err, pto) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          for (let i = 1; i < 9; i++) {
-            new Table({
-              number: i,
-              local: pto._id,
-              scrutinized: false
-
-            }).save(err => {
-              if (err) {
-                console.log("error", err);
-              }
-      
-              console.log("added table " + i + " " + pto.name );
-            });
-          };
-        });
-        Local.findOne({name: "GUAIMARO SAN MIGUEL" },
+        Local.findOne({name: "EL HATILLO" },
         (err, pto) => {
           if (err) {
             res.status(500).send({ message: errr });
             return;
           }
-          for (let i = 1; i < 3; i++) {
+          for (let i = 1; i < 17; i++) {
             new Table({
               number: i,
               local: pto._id,
@@ -331,27 +351,6 @@ initial = (req, res, next) => {
             });
           };
         });
-        Local.findOne({name: "PUERTO ANTIOQUIA" },
-        (err, pto) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-              for (let i = 1; i < 3; i++) {
-                new Table({
-                  number: i,
-                  local: pto._id,
-                  scrutinized: false
-
-                }).save(err => {
-                  if (err) {
-                    console.log("error", err);
-                  }
-          
-                  console.log("added table " + i + " " + pto.name );
-                });
-              };
-            });
       };
     }); 
   }, 10000);  

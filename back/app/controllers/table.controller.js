@@ -21,7 +21,7 @@ getTables = (req, res) => {
           if (!tables.length) {   
               return res
                   .status(404)
-                  .json({ success: false, error: 'candidate not found' })
+                  .json({ success: false, error: 'No hay tablas' })
           }
       return res.status(200).json({ success: true, data: tables})
       }).clone().catch(err => console.log(err))
