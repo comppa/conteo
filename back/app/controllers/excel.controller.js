@@ -56,7 +56,7 @@ const readXlsxFile = require("read-excel-file/node");
 //   }
 // };
 
-const uploadUsers = async (req, res) => {
+const uploadUsers = async (req, res, next) => {
   try {
     if (req.file == undefined) {
       return res.status(400).send("Please upload an excel file!");
@@ -68,42 +68,54 @@ const uploadUsers = async (req, res) => {
     readXlsxFile(path).then(async (rows) => {
       // skip header
       rows.shift();
-
-      await rows.forEach( async (row) => {
-        let table;
-        let local = await Local.findOne({name: row[6]});
-        let role = await Role.findOne({name: row[5]});
-        if (row[7]) {
-          table = await Table.findOne({local: local._id, number: row[7].toString()});
-        }
-        const user = new User({
-          nit: row[0],
-          name: row[1],
-          username: row[2],
-          password: bcrypt.hashSync(row[3].toString(), 8),
-          phone: row[4],
-          send: false,
-          role: role._id,
-          local: local,
-          table: table ? (table._id) : (table)
-        });
-      
-         user.save((err, user) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
+      try {
+        await rows.forEach( async (row) => {
+          let table;
+          let error = false;
+          let local = await Local.findOne({name: row[6]});
+          let role = await Role.findOne({name: row[5]});
+          let uservalid = await User.findOne({username: row[2]});
+          if (uservalid) {
+             error = true;
           }
-          console.log("se guardo ", user.name)
+          if (row[7]) {
+            table = await Table.findOne({local: local._id, number: row[7].toString()});
+            if (table) {
+              uservali = await User.findOne({table: table._id});
+              if (uservali) {
+                error = true;
+              }
+            }
+          }
+          const user = new User({
+            nit: row[0],
+            name: row[1],
+            username: row[2],
+            password: bcrypt.hashSync(row[3].toString(), 8),
+            phone: row[4],
+            send: false,
+            role: role._id,
+            local: local,
+            table: table ? (table._id) : (table)
+          });
+        
+           user.save((err, user) => {
+            if (err) {
+              // res.status(500).send({ message: err });
+              // return;
+              console.log(err.code, err.keyValue.username);
+              return;
+            }
+            console.log("se guardo ", user.name)
+          });
         });
-      });
-      
-      res.status(200).send({message: "Uploaded users the file successfully: " + req.file.originalname});
+        res.status(200).send({message: "Uploaded users the file successfully: " + req.file.originalname});
+      } catch (error) {
+        console.log("no se pudo agregar");
+      }
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      message: "Could not upload the file: " + req.file.originalname,
-    });
+    console.log("no se pudo agregar");
   }
 };
 

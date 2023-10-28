@@ -110,11 +110,11 @@ exports.signin = (req, res) => {
         }
       });
       if(user.role.name === "testigo"){
-        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send});
+        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send, sign: user.sign});
       }else if(user.role.name === "coordinador") {
-        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name});
+        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, sign: user.sign});
       }else{
-        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
+        res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, sign: user.sign});
       }
       // console.log(user.table.number);
     });
@@ -188,12 +188,12 @@ exports.getuser = (req, res ) =>{
     var authorities = "ROLE_" + user.role.name.toUpperCase();
     // console.log(user);
     if(user.role.name === "testigo"){
-      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send});
+      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, table: user.table.number, send: user.send, sign: user.sign});
     }else if(user.role.name === "coordinador") {
-      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name});
+      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, local: user.local.name, sign: user.sign});
     }else{
       // console.log(user);
-      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone});
+      res.status(200).send({id: user._id, username: user.username, nit: user.nit, name: user.name, role: authorities, accessToken: token, phone: user.phone, sign: user.sign});
     }
   });
 };
@@ -206,7 +206,7 @@ exports.logout = (req, res ) =>{
     }
 
     user.sign = false;
-    // console.log(user);
+    console.log(user);
     user.save(err => {
         if (err) {
           res.status(500).send({ message: err });
@@ -246,12 +246,15 @@ exports.update = (req, res) => {
           return res.status(404).json({ success: false, error: "El usuario " + req.body.username +" no existe, ingresa un usuario valido" });
       }
 
-     if(req.body.name){
+      user.sign = false;
+     
+      if(req.body.name){
        user.name= req.body.name;
      }
      if(req.body.username){
        user.username= req.body.username;
      }
+
      if(req.body.password){
        user.password= req.body.password;
      }

@@ -6,8 +6,6 @@ const db = require("./app/models");
 const fs = require('fs');
 const https = require('https');
 const dbConfig = require("./app/config/db.config");
-const cookieParser = require("cookie-parser");
-const sessions = require('express-session');
 // const seed = require("./app/seeds/seed");
 
 const Role = db.role;
@@ -17,7 +15,7 @@ const Local = db.local;
 
 
 var corsOptions = {
-  origin: "https://bello.jpweb.com.co"
+  origin: "https://barbosa.jpweb.com.co"
 };
 
 
@@ -30,7 +28,7 @@ app.use(cors());
 
 // const httpsServer = https.createServer({
 //   key: fs.readFileSync('./cert/privkey.pem'),
-//   cert: fs.readFileSync('/home/ubuntu/server/cert/fullchain.pem'),
+//   cert: fs.readFileSync('./cert/fullchain.pem'),
 // },app);
 
 db.mongoose.set('strictQuery', false);
@@ -54,15 +52,7 @@ db.mongoose
 
   // parse requests of content-type - application/x-www-form-urlencoded
   app.use(express.urlencoded({ extended: false }));
-  // app.use(cookieParser());
-
-  // const oneDay = 1000 * 60 * 60 * 24;
-  //   app.use(sessions({
-  //       secret: "secret-bello",
-  //       saveUninitialized:true,
-  //       cookie: { maxAge: oneDay },
-  //       resave: false 
-  //   }));
+ 
   //Aca se colocan las rutas
   app.get("/", (req, res) => {
     res.json({ message: "Bienvenido a mi apliacion para conteo de votos a traves de los formularios." });
@@ -70,7 +60,8 @@ db.mongoose
 
 
   function initial() {
-
+   
+  
   }
 
 // routes
@@ -91,4 +82,4 @@ const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
-});
+}); 

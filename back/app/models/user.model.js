@@ -9,7 +9,10 @@ const User = mongoose.model(
       unique: true
     },
     name: String,
-    username: String,
+    username: {
+      type: String,
+      unique: true
+    },
     password: String,
     phone: String,
     send: Boolean,
@@ -24,7 +27,8 @@ const User = mongoose.model(
     },
     table: {
       type: Schema.Types.ObjectId,
-      ref: "Table"
+      ref: "Table",
+      unique: true
     }
   }, { timestamps: true })
 );
