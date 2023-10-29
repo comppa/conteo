@@ -70,9 +70,11 @@ const uploadUsers = async (req, res, next) => {
       rows.shift();
       try {
         await rows.forEach( async (row) => {
-          let table;
+          let table, local;
           let error = false;
-          let local = await Local.findOne({name: row[6]});
+          if (row[6]) {
+            local = await Local.findOne({name: row[6]});
+          }
           let role = await Role.findOne({name: row[5]});
           let uservalid = await User.findOne({username: row[2]});
           if (uservalid) {
@@ -95,7 +97,7 @@ const uploadUsers = async (req, res, next) => {
             phone: row[4],
             send: false,
             role: role._id,
-            local: local,
+            local: local ? (local._id) : (local),
             table: table ? (table._id) : (table)
           });
         

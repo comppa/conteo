@@ -12,7 +12,7 @@ initial = (req, res, next) => {
      
   Role.estimatedDocumentCount((error, count) => {
     // console.log(count);
-    if (!error && count === 0) {
+    // if (!error && count === 0) {
     const rolea = ["admin", "candidato", "testigo", "coordinador"];
     for (let i = 0; i < rolea.length; i++) {
       new Role({
@@ -25,12 +25,12 @@ initial = (req, res, next) => {
         console.log("added "+ rolea[i] +" to roles collection");
       });
      };
-    };
+    // };
   });
 
 
   Local.estimatedDocumentCount((error, count) => {
-    if (!error && count === 0) {
+    // if (!error && count === 0) {
     var locala = [["PBRO. LUIS EDUARDO PEREZ MOLIN", 1],
     ["INST. EDUC. MANUEL JOSE CAICED", 2],
     ["IE LUIS EDUARDO ARIAS", 3],
@@ -51,11 +51,11 @@ initial = (req, res, next) => {
           console.log("added local " + locala[i]);
         });
       };
-    }
+    // }
   });
   
   Candidate.estimatedDocumentCount((error, count) => {
-    if (!error && count === 0) {
+    // if (!error && count === 0) {
       new Candidate({
         number: 1,
         name: "ALINA MARCELA RESTREPO RODRIGUEZ"
@@ -153,12 +153,12 @@ initial = (req, res, next) => {
       }
       console.log("added candidate Voto en Blanco");
     });
-    };
+    // };
   });
 
   setTimeout(function() {
     Table.estimatedDocumentCount((error, count) => {
-      if (!error && count === 0) {
+      // if (!error && count === 0) {
         Local.findOne({name: "PBRO. LUIS EDUARDO PEREZ MOLIN"},
         (err, pto) => {
           console.log(pto.name);
@@ -351,7 +351,7 @@ initial = (req, res, next) => {
             });
           };
         });
-      };
+      // };
     }); 
   }, 10000);  
   

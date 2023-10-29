@@ -15,7 +15,7 @@ const Local = db.local;
 
 
 var corsOptions = {
-  origin: "https://barbosa.jpweb.com.co"
+  origin: "https://taraza.jpweb.com.co"
 };
 
 
@@ -24,12 +24,12 @@ global.__basedir = __dirname ;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
+app.use(cors(corsOptions));
 
-// const httpsServer = https.createServer({
-//   key: fs.readFileSync('./cert/privkey.pem'),
-//   cert: fs.readFileSync('./cert/fullchain.pem'),
-// },app);
+const httpsServer = https.createServer({
+  key: fs.readFileSync('./cert/privkey.pem'),
+  cert: fs.readFileSync('./cert/fullchain.pem'),
+},app);
 
 db.mongoose.set('strictQuery', false);
 db.mongoose
@@ -60,8 +60,7 @@ db.mongoose
 
 
   function initial() {
-   
-  
+    
   }
 
 // routes
@@ -75,11 +74,11 @@ require('./app/routes/table.routes')(app);
 
 // puerto
 const PORT = process.env.PORT || 8080;
-// httpsServer.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}.`);
-// });
+httpsServer.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
+});
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-}); 
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}.`);
+// }); 
