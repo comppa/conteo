@@ -27,8 +27,7 @@ const User = mongoose.model(
     },
     table: {
       type: Schema.Types.ObjectId,
-      ref: "Table",
-      unique: true
+      ref: "Table"
     }
   }, { timestamps: true })
 );

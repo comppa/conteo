@@ -27,8 +27,8 @@ checkIfSign = (req, res, next) => {
   User.findOne({
     username: req.body.username
   }).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
+    if (!user) {
+      res.status(500).send({ message: "El usuario no existe" });
       return;
     }
 
@@ -132,33 +132,36 @@ checkIfTable = (req, res, next) => {
           res.status(500).send({ message: "Ingrese un puesto de votación valido" });
           return;
         }
-        
-        Table.findOne({
-              number: req.body.table,
-              local: pto._id
-        },(err, table) => {
-            if (!table) {
-                return res.status(400).json({ success: false, error: "Proporcione un numero de mesa" })
-            }
-            // console.log(table._id);
-            User.findOne({
-              table: table._id
-            }).exec((err, user) => {
-              if (err) {
-                res.status(500).send({ message: err });
-                return;
+        if (req.body.table) {
+          Table.findOne({
+            number: req.body.table,
+            local: pto._id
+          },(err, table) => {
+              if (!table) {
+                  return res.status(400).json({ success: false, error: "Proporcione un numero de mesa" })
               }
-  
-              if (user) {
-                res.status(400).send({ message: "La mesa ya tiene un usuario asignado, ingrese otra mesa" });
-                return;
-              }
-              
-            });
-          next();
-        });
+              // console.log(table._id);
+              User.findOne({
+                table: table._id
+              }).exec((err, user) => {
+                if (err) {
+                  res.status(500).send({ message: err });
+                  return;
+                }
+
+                if (user) {
+                  res.status(400).send({ message: "La mesa ya tiene un usuario asignado, ingrese otra mesa" });
+                  return;
+                }
+                
+              });
+            next();
+          });
+        }
+        next();  
     });
   }
+  next();
 }
 
 

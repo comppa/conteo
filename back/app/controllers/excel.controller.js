@@ -70,8 +70,10 @@ const uploadUsers = async (req, res, next) => {
       rows.shift();
       try {
         await rows.forEach( async (row) => {
-          let table, local;
+          let table = "2"; 
+          let local;
           let error = false;
+          console.log(row);
           if (row[6]) {
             local = await Local.findOne({name: row[6]});
           }
@@ -94,18 +96,20 @@ const uploadUsers = async (req, res, next) => {
             name: row[1],
             username: row[2],
             password: bcrypt.hashSync(row[3].toString(), 8),
-            phone: row[4],
+            phone: row[4].toString(),
             send: false,
             role: role._id,
             local: local ? (local._id) : (local),
-            table: table ? (table._id) : (table)
+            table: table ? (table._id) : (table),
+            sign: false
           });
-        
+          console.log(user);
            user.save((err, user) => {
             if (err) {
+              console.log(err);
               // res.status(500).send({ message: err });
               // return;
-              console.log(err.code, err.keyValue.username);
+              console.log(err.code, err.keyValue.name);
               return;
             }
             console.log("se guardo ", user.name)
